@@ -7,10 +7,12 @@
           outlined=""
           v-model="company"
           :options="companyOptions"
-          label="Companies"
+          label="Compañías"
           :error="errorFlag"
           :error-message="errorMsg"
           @input="errorFlag = false"
+          map-options
+          emit-value
         >
         </q-select>
       </q-card-section>
@@ -38,7 +40,7 @@ export default {
         this.errorFlag = true
         return
       }
-      this.$store.commit('company/setActiveCompany', this.company.value)
+      this.$store.commit('company/setActiveCompany', this.company)
       this.$router.push({ name: 'dashboard' })
     }
   },

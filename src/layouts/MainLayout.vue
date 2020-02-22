@@ -36,7 +36,8 @@
       <div class="text-h4 text-center text-weight-bold text-primary q-pt-lg">
         {{activeCompanyName}}
       </div>
-      <q-list>
+      <StoreSelection class="q-mt-md" />
+      <q-list v-if="activeStore">
         <q-item-label header class="text-grey-8">Gestión de facturas</q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
@@ -54,12 +55,14 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink'
+import StoreSelection from 'components/StoreSelection'
 
 export default {
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    EssentialLink,
+    StoreSelection
   },
 
   data () {
@@ -76,13 +79,13 @@ export default {
           title: 'Revisar',
           caption: 'Ver Factura',
           icon: 'receipt',
-          link: 'https://github.com/quasarframework'
+          link: 'list'
         },
         {
           title: 'Inventario',
           caption: 'Listado Productos',
           icon: 'ballot',
-          link: 'https://chat.quasar.dev'
+          link: 'inventory'
         }
       ]
     }
@@ -98,6 +101,9 @@ export default {
       let name = this.$store.getters['company/getActiveCompany']
       name = name.slice(0, 1).toUpperCase() + name.slice(1)
       return name
+    },
+    activeStore () {
+      return this.$store.getters['company/getStore']
     }
   }
 }

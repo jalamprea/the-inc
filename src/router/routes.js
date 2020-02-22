@@ -12,7 +12,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: 'dashboard', name: 'dashboard', component: () => import('pages/Index.vue') },
-      { path: 'create', name: 'create', component: () => import('pages/CreateBill.vue') }
+      { path: 'create', name: 'create', component: () => import('pages/CreateBill.vue') },
+      { path: 'list', name: 'list', component: () => import('pages/CheckBill.vue') },
+      { path: 'inventory', name: 'inventory', component: () => import('pages/Inventory.vue') }
     ]
   }
 ]
