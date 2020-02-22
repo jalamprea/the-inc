@@ -18,7 +18,9 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
-    "quasar": "^1.0.0"
+    "firebase": "^7.9.1",
+    "quasar": "^1.0.0",
+    "vuefire": "^2.2.1"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",

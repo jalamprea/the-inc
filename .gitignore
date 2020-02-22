@@ -31,3 +31,6 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+src/conf/firebase.conf.js
+src/conf/the-inc-siigo2020-firebase-adminsdk-xsntu-a7a59a2171.json
+.firebase/hosting*
