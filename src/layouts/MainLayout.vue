@@ -14,7 +14,7 @@
         <q-toolbar-title>
           Siigo App
         </q-toolbar-title>
-        <span class="q-mr-sm">The Inc. v 0.1</span>
+        <span class="q-mr-sm">The Inc. v0.1</span>
         <q-btn
           dense
           @click="logout"

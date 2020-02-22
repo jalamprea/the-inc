@@ -8,6 +8,9 @@
           v-model="company"
           :options="companyOptions"
           label="Companies"
+          :error="errorFlag"
+          :error-message="errorMsg"
+          @input="errorFlag = false"
         >
         </q-select>
       </q-card-section>
@@ -24,11 +27,17 @@ export default {
   data () {
     return {
       company: '',
-      companyOptions: []
+      companyOptions: [],
+      errorFlag: false,
+      errorMsg: 'An option must be selected'
     }
   },
   methods: {
     loginCompany () {
+      if (!this.company) {
+        this.errorFlag = true
+        return
+      }
       this.$store.commit('company/setActiveCompany', this.company.value)
       this.$router.push({ name: 'dashboard' })
     }
