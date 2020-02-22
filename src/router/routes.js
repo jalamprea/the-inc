@@ -9,7 +9,8 @@ const routes = [
       { path: '/crear', name: 'create', component: () => import('pages/CreateBill.vue') },
       { path: '/lista', name: 'list', component: () => import('pages/ListBill.vue') },
       { path: '/factura/:id', name: 'bill', props: true, component: () => import('pages/CheckBill.vue') },
-      { path: '/inventario', name: 'inventory', component: () => import('pages/Inventory.vue') }
+      { path: '/inventario', name: 'inventory', component: () => import('pages/Inventory.vue') },
+      { path: '/subir-csv', name: 'upload-csv', component: () => import('pages/UploadCSV.vue') }
     ]
   },
   {

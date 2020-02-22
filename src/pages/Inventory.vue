@@ -9,7 +9,11 @@
           :data="products"
           :columns="columns"
           row-key="name"
-        />
+        >
+        <template v-slot:top-right>
+          <q-btn color="primary" label="Actualizar Inventario" v-on:click="openUploader" />
+        </template>
+      </q-table>
 
       </div>
       <div
@@ -27,7 +31,6 @@ import formatMixin from '../mixins/formats'
 export default {
   computed: {
     hasProducts () {
-      console.log('hasProducts', this)
       return this.products && this.products.length > 0
     }
   },
@@ -50,6 +53,11 @@ export default {
       products: this.$firestore
         .collection('companies').doc(company)
         .collection('inventory')
+    }
+  },
+  methods: {
+    openUploader () {
+      this.$router.push('/subir-csv')
     }
   }
 }
