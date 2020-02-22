@@ -20,7 +20,8 @@
     "axios": "^0.18.1",
     "firebase": "^7.9.1",
     "quasar": "^1.0.0",
-    "vuefire": "^2.2.1"
+    "vuefire": "^2.2.1",
+    "vuex-persistedstate": "^2.7.1"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",

@@ -15,7 +15,7 @@
           Siigo App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn @click="logout" color="">Logout</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -25,6 +25,9 @@
       bordered
       content-class="bg-grey-1"
     >
+      <div class="text-h4 text-center text-weight-bold text-primary q-pt-lg">
+        {{activeCompanyName}}
+      </div>
       <q-list>
         <q-item-label header class="text-grey-8">Essential Links</q-item-label>
         <EssentialLink
@@ -56,42 +59,37 @@ export default {
       leftDrawerOpen: false,
       essentialLinks: [
         {
-          title: 'Docs',
+          title: 'Crear Factura',
           caption: 'quasar.dev',
           icon: 'school',
-          link: 'https://quasar.dev'
+          link: 'create'
         },
         {
-          title: 'Github',
+          title: 'Listar Facturas',
           caption: 'github.com/quasarframework',
           icon: 'code',
           link: 'https://github.com/quasarframework'
         },
         {
-          title: 'Discord Chat Channel',
+          title: 'Inventario',
           caption: 'chat.quasar.dev',
           icon: 'chat',
           link: 'https://chat.quasar.dev'
-        },
-        {
-          title: 'Forum',
-          caption: 'forum.quasar.dev',
-          icon: 'record_voice_over',
-          link: 'https://forum.quasar.dev'
-        },
-        {
-          title: 'Twitter',
-          caption: '@quasarframework',
-          icon: 'rss_feed',
-          link: 'https://twitter.quasar.dev'
-        },
-        {
-          title: 'Facebook',
-          caption: '@QuasarFramework',
-          icon: 'public',
-          link: 'https://facebook.quasar.dev'
         }
       ]
+    }
+  },
+  methods: {
+    logout () {
+      this.$store.commit('company/logout')
+      this.$router.push({ name: 'login' })
+    }
+  },
+  computed: {
+    activeCompanyName () {
+      let name = this.$store.getters['company/getActiveCompany']
+      name = name.slice(0, 1).toUpperCase() + name.slice(1)
+      return name
     }
   }
 }
