@@ -4,7 +4,7 @@ const multer = require('multer')
 // Firestore connection
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
 const db = admin.firestore();
 
 // File limit: check if it is enough:
@@ -23,16 +23,14 @@ const multipartFormDataParser = multer({
   },
 })
 
-app.post('/update', multipartFormDataParser.any(), function (req, res, next) {
+app.post('/update', multipartFormDataParser.any(), async function (req, res, next) {
   const company = req.body.company || null;
   if (!company) {
     res.status(403)
     return res.send("403 Forbidden: Invalid company");
   }
 
-  const out = {
-    company
-  };
+  const out = { company };
 
   if (req.files && req.files.length>0) {
     const file = req.files[0];
@@ -41,9 +39,8 @@ app.post('/update', multipartFormDataParser.any(), function (req, res, next) {
 
     out.products = products.length;
 
-    // updateStock(company, products);
+    await updateStock(company, products);
   }
-
 
   res.json(out);
 })
@@ -51,13 +48,21 @@ app.post('/update', multipartFormDataParser.any(), function (req, res, next) {
 exports.app = app;
 
 
-const updateStock = (company, products) => {
-  let companyRef = db.collection('companies').doc(company);
+// Update the respective stock company
+const updateStock = async (company, products) => {
+  // console.log('COMPANY:', company);
+  let companyStockRef = db.collection('companies').doc(company).collection('inventory');
 
-  /* products.map(async product => {
-    const prod = await companyRef.collection('inventory').doc(product.name).get();
-    console.log(prod);
-  }) */
+  let product = null;
+  for (var i = products.length - 1; i >= 0; i--) {
+    try {
+      product = products[i]
+      // console.log('Processing:', product);
+      await companyStockRef.doc(product.name).set(product);
+    } catch(ex) {
+      console.error('Firebase error:', ex)
+    }
+  }
 }
 
 
@@ -75,9 +80,9 @@ const processCSV = raw => {
 
     const product = {
       name: data[titles.product].trim(),
-      price: data[titles.price].trim(),
-      stock: data[titles.stock].trim(),
-      tax: data[titles.tax].trim()
+      price: parseFloat(data[titles.price].trim()),
+      stock: parseFloat(data[titles.stock].trim()),
+      tax: parseFloat(data[titles.tax].trim())
     }
     products.push(product)
     return product
