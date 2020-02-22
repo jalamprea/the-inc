@@ -93,7 +93,7 @@ export default {
   methods: {
     logout () {
       this.$store.commit('company/logout')
-      this.$router.push({ name: 'login' })
+      // this.$router.push({ name: 'login' })
     }
   },
   computed: {
@@ -104,6 +104,14 @@ export default {
     },
     activeStore () {
       return this.$store.getters['company/getStore']
+    }
+  },
+  watch: {
+    activeCompanyName: {
+      handler (val) {
+        this.$router.push({ name: 'login' })
+      },
+      immediate: true
     }
   }
 }

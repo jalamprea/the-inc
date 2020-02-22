@@ -42,22 +42,24 @@ export default {
   methods: {
     loadStores () {
       const company = this.$store.getters['company/getActiveCompany']
-      this.$firestore
-        .collection('companies').doc(company)
-        .collection('stores').get()
-        .then(snapshot => {
-          const stores = []
-          snapshot.forEach(doc => {
-            stores.push({
-              value: doc.id,
-              label: doc.id.toUpperCase()
+      if (company) {
+        this.$firestore
+          .collection('companies').doc(company)
+          .collection('stores').get()
+          .then(snapshot => {
+            const stores = []
+            snapshot.forEach(doc => {
+              stores.push({
+                value: doc.id,
+                label: doc.id.toUpperCase()
+              })
             })
+            return stores
           })
-          return stores
-        })
-        .then(data => {
-          this.storeOptions = data
-        })
+          .then(data => {
+            this.storeOptions = data
+          })
+      }
     },
     chooseStore () {
       this.$store.commit('setStore', this.selectedStore.value)

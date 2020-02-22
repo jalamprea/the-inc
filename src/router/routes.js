@@ -2,13 +2,7 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/CleanLayout.vue'),
-    children: [
-      { path: '', name: 'login', component: () => import('pages/init/login.vue') }
-    ]
-  },
-  {
-    path: '/',
+    redirect: '/dashboard',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '/dashboard', name: 'dashboard', component: () => import('pages/Index.vue') },
@@ -16,6 +10,13 @@ const routes = [
       { path: '/lista', name: 'list', component: () => import('pages/ListBill.vue') },
       { path: '/factura/:id', name: 'bill', props: true, component: () => import('pages/CheckBill.vue') },
       { path: '/inventario', name: 'inventory', component: () => import('pages/Inventory.vue') }
+    ]
+  },
+  {
+    path: '/',
+    component: () => import('layouts/CleanLayout.vue'),
+    children: [
+      { path: '', name: 'login', component: () => import('pages/init/login.vue') }
     ]
   }
 ]
