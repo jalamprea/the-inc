@@ -73,19 +73,19 @@ export default {
           title: 'Crear',
           caption: 'Nueva Factura',
           icon: 'add_circle_outline',
-          link: 'create'
+          link: '/crear'
         },
         {
           title: 'Revisar',
           caption: 'Ver Factura',
           icon: 'receipt',
-          link: 'list'
+          link: '/lista'
         },
         {
           title: 'Inventario',
           caption: 'Listado Productos',
           icon: 'ballot',
-          link: 'inventory'
+          link: '/inventario'
         }
       ]
     }
@@ -93,7 +93,7 @@ export default {
   methods: {
     logout () {
       this.$store.commit('company/logout')
-      this.$router.push({ name: 'login' })
+      // this.$router.push({ name: 'login' })
     }
   },
   computed: {
@@ -104,6 +104,14 @@ export default {
     },
     activeStore () {
       return this.$store.getters['company/getStore']
+    }
+  },
+  watch: {
+    activeCompanyName: {
+      handler (val) {
+        this.$router.push({ name: 'login' })
+      },
+      immediate: true
     }
   }
 }

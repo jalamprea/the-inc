@@ -2,19 +2,21 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/CleanLayout.vue'),
+    redirect: '/dashboard',
+    component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', name: 'login', component: () => import('pages/init/login.vue') }
+      { path: '/dashboard', name: 'dashboard', component: () => import('pages/Index.vue') },
+      { path: '/crear', name: 'create', component: () => import('pages/CreateBill.vue') },
+      { path: '/lista', name: 'list', component: () => import('pages/ListBill.vue') },
+      { path: '/factura/:id', name: 'bill', props: true, component: () => import('pages/CheckBill.vue') },
+      { path: '/inventario', name: 'inventory', component: () => import('pages/Inventory.vue') }
     ]
   },
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/CleanLayout.vue'),
     children: [
-      { path: 'dashboard', name: 'dashboard', component: () => import('pages/Index.vue') },
-      { path: 'create', name: 'create', component: () => import('pages/CreateBill.vue') },
-      { path: 'list', name: 'list', component: () => import('pages/CheckBill.vue') },
-      { path: 'inventory', name: 'inventory', component: () => import('pages/Inventory.vue') }
+      { path: '', name: 'login', component: () => import('pages/init/login.vue') }
     ]
   }
 ]

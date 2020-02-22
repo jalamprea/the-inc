@@ -28,7 +28,6 @@ export default {
   // name: 'PageName',
   data () {
     return {
-      company: '',
       companyOptions: [],
       errorFlag: false,
       errorMsg: 'An option must be selected'
@@ -40,11 +39,23 @@ export default {
         this.errorFlag = true
         return
       }
-      this.$store.commit('company/setActiveCompany', this.company)
       this.$router.push({ name: 'dashboard' })
     }
   },
-  mounted () {
+  computed: {
+    company: {
+      get () {
+        return this.$store.getters['company/getActiveCompany']
+      },
+      set (val) {
+        this.$store.commit('company/setActiveCompany', val)
+      }
+    }
+  },
+  created () {
+    if (this.company) {
+      this.$router.push({ name: 'dashboard' })
+    }
     this.$firestore.collection('companies').get().then(snapshot => {
       snapshot.forEach(doc => {
         const company = {
