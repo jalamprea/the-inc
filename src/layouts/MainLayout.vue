@@ -73,19 +73,19 @@ export default {
           title: 'Crear',
           caption: 'Nueva Factura',
           icon: 'add_circle_outline',
-          link: 'create'
+          link: '/crear'
         },
         {
           title: 'Revisar',
           caption: 'Ver Factura',
           icon: 'receipt',
-          link: 'list'
+          link: '/lista'
         },
         {
           title: 'Inventario',
           caption: 'Listado Productos',
           icon: 'ballot',
-          link: 'inventory'
+          link: '/inventario'
         }
       ]
     }
