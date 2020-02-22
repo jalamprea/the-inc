@@ -58,7 +58,12 @@ const updateStock = async (company, products) => {
     try {
       product = products[i]
       // console.log('Processing:', product);
-      await companyStockRef.doc(product.name).set(product);
+      await companyStockRef.doc(product.id).set({
+        name: product.name,
+        price: product.price,
+        stock: product.stock,
+        tax: product.tax
+      });
     } catch(ex) {
       console.error('Firebase error:', ex)
     }
@@ -71,21 +76,31 @@ const processCSV = raw => {
   const titles = {};
   const products = [];
   lines.map((line, index) => {
+    if (!line || line.length<1) {
+      return null;
+    }
+
     const data = line.split(/[:,]/);
 
     if (index===0) {
-      data.map((title, index) => { titles[title] = index; });
+      data.map((title, index) => { titles[title.trim()] = index; });
       return null
     }
 
-    const product = {
-      name: data[titles.product].trim(),
-      price: parseFloat(data[titles.price].trim()),
-      stock: parseFloat(data[titles.stock].trim()),
-      tax: parseFloat(data[titles.tax].trim())
+    console.log('Reading:', data);
+    try {
+      const product = {
+        id: data[titles.id].trim(),
+        name: data[titles.name].trim(),
+        price: parseFloat(data[titles.price].trim()),
+        stock: parseFloat(data[titles.stock].trim()),
+        tax: parseFloat(data[titles.tax].trim())
+      }
+      products.push(product)
+      return product
+    } catch(ex) {
+      console.error(ex);
     }
-    products.push(product)
-    return product
   })
 
   return products
