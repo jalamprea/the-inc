@@ -14,8 +14,16 @@
         <q-toolbar-title>
           Siigo App
         </q-toolbar-title>
-
-        <q-btn @click="logout" color="">Logout</q-btn>
+        <span class="q-mr-sm">The Inc. v 0.1</span>
+        <q-btn
+          dense
+          @click="logout"
+          color="white"
+          text-color="primary"
+          icon="fas fa-sign-out-alt"
+          title="Log Out"
+        >
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -29,7 +37,7 @@
         {{activeCompanyName}}
       </div>
       <q-list>
-        <q-item-label header class="text-grey-8">Essential Links</q-item-label>
+        <q-item-label header class="text-grey-8">Gestión de facturas</q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -59,21 +67,21 @@ export default {
       leftDrawerOpen: false,
       essentialLinks: [
         {
-          title: 'Crear Factura',
-          caption: 'quasar.dev',
-          icon: 'school',
+          title: 'Crear',
+          caption: 'Nueva Factura',
+          icon: 'add_circle_outline',
           link: 'create'
         },
         {
-          title: 'Listar Facturas',
-          caption: 'github.com/quasarframework',
-          icon: 'code',
+          title: 'Revisar',
+          caption: 'Ver Factura',
+          icon: 'receipt',
           link: 'https://github.com/quasarframework'
         },
         {
           title: 'Inventario',
-          caption: 'chat.quasar.dev',
-          icon: 'chat',
+          caption: 'Listado Productos',
+          icon: 'ballot',
           link: 'https://chat.quasar.dev'
         }
       ]
