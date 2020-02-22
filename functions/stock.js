@@ -1,5 +1,6 @@
 const express = require('express')
 const multer = require('multer')
+const cors = require('cors')
 
 // Firestore connection
 const functions = require('firebase-functions');
@@ -23,7 +24,10 @@ const multipartFormDataParser = multer({
   },
 })
 
+app.use(cors())
 app.post('/update', multipartFormDataParser.any(), async function (req, res, next) {
+  res.set('Access-Control-Allow-Origin', '*');
+
   const company = req.body.company || null;
   if (!company) {
     res.status(403)
