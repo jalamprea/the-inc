@@ -16,10 +16,10 @@
         </q-toolbar-title>
         <span class="q-mr-sm">The Inc. v0.1</span>
         <q-btn
+          flat
           dense
           @click="logout"
-          color="white"
-          text-color="primary"
+          text-color="white"
           icon="fas fa-sign-out-alt"
           title="Log Out"
         >
@@ -36,7 +36,7 @@
       <div class="text-h4 text-center text-weight-bold text-primary q-pt-lg">
         {{activeCompanyName}}
       </div>
-      <StoreSelection class="q-mt-md" />
+      <StoreSelection class="q-mt-lg" />
       <q-list v-if="activeStore">
         <q-item-label header class="text-grey-8">Gestión de facturas</q-item-label>
         <EssentialLink

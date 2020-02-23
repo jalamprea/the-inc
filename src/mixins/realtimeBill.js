@@ -21,7 +21,6 @@ const mixin = {
   mounted () {
     this.company = this.$store.getters['company/getActiveCompany']
     this.store = this.$store.getters['company/getStore']
-    console.log('mounted', this.company, this.store, this.$route.params.id)
     this.startVuefire()
   }
 }

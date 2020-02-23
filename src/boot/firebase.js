@@ -27,6 +27,19 @@ export default ({ router, Vue }) => {
           const firestore = firebase.firestore()
           const storage = firebase.storage()
           const functions = firebase.functions()
+          console.log('persistance')
+          firebase.firestore().enablePersistence()
+            .catch(err => {
+              if (err.code === 'failed-precondition') {
+                // Multiple tabs open, persistence can only be enabled
+                // in one tab at a a time.
+                // ...
+              } else if (err.code === 'unimplemented') {
+                // The current browser does not support all of the
+                // features required to enable persistence
+                // ...
+              }
+            })
 
           // Add props to our Vue instance for easy access in our app
           Vue.prototype.$firebase = firebase

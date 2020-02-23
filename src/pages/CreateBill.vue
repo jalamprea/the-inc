@@ -18,7 +18,8 @@ export default {
         .collection('invoices').add({
           created_at: this.$firebase.firestore.Timestamp.now(),
           status: 'draft',
-          total: 0
+          total: 0,
+          company: this.company
         })
         .then(res => {
           console.log('res :', res)
