@@ -33,7 +33,7 @@
             <td class="text-left">{{item.name}}</td>
             <td class="text-center">{{item.price}}</td>
             <td class="text-center">{{item.units}}</td>
-            <td class="text-center">{{item.tax}}</td>
+            <td class="text-center">{{item.tax * 100}}%</td>
             <td class="text-center">{{item.total}}</td>
             <td class="text-center">
               <!-- <q-btn color="secondary" @click="editItem(item.id)" icon="edit" flat dense></q-btn> -->
@@ -97,7 +97,15 @@
             </td>
             <td class="text-right">
               <div class="row justify-center">
-                <q-input style="width: 60px" outlined dense input-class="text-center" v-model="form.tax" readonly></q-input>
+                <q-input
+                  style="width: 60px"
+                  outlined
+                  dense
+                  input-class="text-center"
+                  :value="`${form.tax * 100}%`"
+                  readonly
+                >
+                </q-input>
               </div>
             </td>
             <td class="text-right">
@@ -134,6 +142,7 @@
       >
       </q-btn>
     </div>
+    <!-- {{userHistory}} -->
   </q-page>
 </template>
 
@@ -151,7 +160,8 @@ export default {
         units: 0,
         tax: 0.19
       },
-      clientId: ''
+      clientId: '',
+      userHistory: []
     }
   },
   computed: {
@@ -289,16 +299,33 @@ export default {
 
       this.$q.notify('Factura procesada correctamente!')
       this.$router.push({ name: 'list' })
+    },
+    getUserPreferences () {
+      const invoices = this.$firestore.collectionGroup('invoices')
+      invoices.where('clientId', '==', 'leo').get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, ' => ', doc)
+
+          doc.ref.collection('products').get().then((productSnapshot) => {
+            console.log('productSnapshot :', productSnapshot)
+            productSnapshot.forEach(ele => {
+              const parsed = ele.data()
+              const interestData = {
+                value: ele.id,
+                label: parsed.name
+              }
+              this.userHistory.push(interestData)
+            })
+          })
+        })
+      }).catch(er => {
+        console.log('er :', er)
+      })
     }
   },
   mounted () {
     this.startVuefire()
-    // const museums = this.$firestore.collectionGroup('invoices')
-    // museums.get().then((querySnapshot) => {
-    //   querySnapshot.forEach((doc) => {
-    //     console.log(doc.id, ' => ', doc.data())
-    //   })
-    // })
+    this.getUserPreferences()
   }
 }
 </script>
