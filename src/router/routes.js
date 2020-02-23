@@ -6,6 +6,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '/dashboard', name: 'dashboard', component: () => import('pages/Index.vue') },
+      { path: '/crear/:id', name: 'BillEditor', props: true, component: () => import('pages/BillEditor.vue') },
       { path: '/crear', name: 'create', component: () => import('pages/CreateBill.vue') },
       { path: '/lista', name: 'list', component: () => import('pages/ListBill.vue') },
       { path: '/factura/:id', name: 'bill', props: true, component: () => import('pages/CheckBill.vue') },
