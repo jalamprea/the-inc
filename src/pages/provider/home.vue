@@ -114,7 +114,14 @@ export default {
     },
     processOrder: function () {
       const provider = this.$store.getters['provider/getActiveProvider']
-      console.log('Processing', this.orderToConfirm.id)
+      console.log('Prov', provider)
+      console.log('Processing', this.orderToConfirm)
+
+      const inc = this.$firebase.firestore.FieldValue.increment(this.orderToConfirm.units)
+      this.$firestore
+        .collection('companies').doc(this.orderToConfirm.client)
+        .collection('inventory').doc(this.orderToConfirm.product_id).set({ stock: inc }, { merge: true })
+
       this.$firestore
         .collection('providers').doc(provider)
         .collection('orders').doc(this.orderToConfirm.id).set({
