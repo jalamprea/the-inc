@@ -48,7 +48,6 @@ export default {
   mixins: [formatMixin],
   firestore () {
     const company = this.$store.getters['company/getActiveCompany']
-    console.log('Comp:', company)
     return {
       products: this.$firestore
         .collection('companies').doc(company)
