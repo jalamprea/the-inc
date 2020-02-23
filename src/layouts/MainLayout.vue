@@ -30,8 +30,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
-      content-class="bg-grey-1"
+      content-class=""
     >
       <div class="text-h4 text-center text-weight-bold text-primary q-pt-lg">
         {{activeCompanyName}}
