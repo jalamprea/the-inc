@@ -142,7 +142,14 @@
       >
       </q-btn>
     </div>
-    <!-- {{userHistory}} -->
+    <div v-if="userHistory.length > 0">
+      <div class="text-h5 q-mt-lg q-mb-sm">
+        Compras anteriores:
+      </div>
+      <div v-for="(item, index) in userHistory" :key="index">
+        - {{item.label}}
+      </div>
+    </div>
   </q-page>
 </template>
 
