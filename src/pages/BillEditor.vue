@@ -1,19 +1,24 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <div class="text-h5 text-primary text-weight-bold">
-      #{{id}}
+    <div class="text-h5 text-primary text-weight-bold row justify-between">
+      <div>
+        #{{id}} <span class="text-weight-light">[ ClientID: {{billInfo && billInfo.clientId ? billInfo.clientId : '-'}} ]</span>
+      </div>
+      <q-btn color="secondary" v-if="data.length > 0">
+        Procesar
+      </q-btn>
     </div>
     <div class="q-mt-md relative-position">
       <q-markup-table separator="vertical" flat bordered>
         <thead>
-          <tr>
+          <tr class="bg-green-1">
             <th class="text-left">Productos</th>
             <th class="text-center">Precio</th>
             <th class="text-center">Unidades</th>
             <th class="text-center">Iva</th>
             <th class="text-center">Total</th>
-            <th class="text-center" style="width: 100px"></th>
+            <th class="text-center" style="width: 60px"></th>
           </tr>
         </thead>
         <tbody>
@@ -31,8 +36,8 @@
             <td class="text-center">{{item.tax}}</td>
             <td class="text-center">{{item.total}}</td>
             <td class="text-center">
-              <q-btn color="secondary" icon="edit" flat dense></q-btn>
-              <q-btn color="secondary" icon="delete" flat dense></q-btn>
+              <!-- <q-btn color="secondary" @click="editItem(item.id)" icon="edit" flat dense></q-btn> -->
+              <q-btn color="secondary" @click="deleteItem(item.id)" icon="delete" flat dense></q-btn>
             </td>
           </tr>
 
@@ -48,7 +53,7 @@
                   dense
                   v-model="form.product"
                   :options="productOptions"
-                  @input="() => $refs.price.focus()"
+                  @input="() => $refs.units.focus()"
                 >
                 </q-select>
               </div>
@@ -62,14 +67,13 @@
                   outlined
                   dense
                   input-class="text-center"
-                  v-model="form.price"
+                  :value="form.product.price || 0"
                   :rules="[ val => val >= 0 || 'Debe ser positivo' ]"
-                  @input="val => form.price = parseFloat(val)"
                   hide-bottom-space
                   min="0"
                   prefix="$"
                   @keydown.enter="$refs.units.focus()"
-
+                  readonly
                 ></q-input>
               </div>
             </td>
@@ -144,25 +148,33 @@ export default {
       addingProduct: false,
       form: {
         product: '',
-        price: 0,
         units: 0,
         tax: 0.19
-      }
+      },
+      clientId: ''
     }
   },
   computed: {
     productOptions () {
-      const mapped = this.products.map(item => {
-        return {
-          ...item,
-          value: item.id,
-          label: item.name
+      const mapped = this.products.reduce((final, item) => {
+        if (item.stock > 0) {
+          const alreadyAdded = this.data.find(el => {
+            return el.id === item.id
+          })
+          if (!alreadyAdded) {
+            final.push({
+              ...item,
+              value: item.id,
+              label: item.name
+            })
+          }
         }
-      })
+        return final
+      }, [])
       return mapped
     },
     formTotal () {
-      return this.form.price * this.form.units
+      return this.form.product.price ? this.form.product.price * this.form.units : 0
     }
   },
   props: {
@@ -181,8 +193,12 @@ export default {
   },
   methods: {
     addItem () {
-      console.log('this.form :', this.form)
-      const { product, units, price, tax } = this.form
+      const { product, units, tax } = this.form
+      if (!product || !units || !tax) {
+        this.$q.notify('Todos los campos son requeridos')
+        return
+      }
+      this.addingProduct = false
       const company = this.$store.getters['company/getActiveCompany']
       const store = this.$store.getters['company/getStore']
       this.$firestore
@@ -191,7 +207,7 @@ export default {
         .collection('invoices').doc(this.$route.params.id)
         .collection('products').doc(product.value).set({
           name: product.label,
-          price: price,
+          price: product.price,
           units: units,
           tax: tax,
           total: this.formTotal
@@ -199,17 +215,34 @@ export default {
           console.log('res :', res)
           this.resetForm()
         }).catch(er => {
+          this.addingProduct = true
           console.log('er :', er)
         })
     },
     resetForm () {
       this.form = {
         product: '',
-        price: 0,
         units: 0,
         tax: 0.19
       }
       this.addingProduct = false
+    },
+    editItem (id) {
+    },
+    deleteItem (id) {
+      this.$q.dialog({
+        title: 'Eliminación',
+        message: '¿Seguro deseas eliminar este producto? '
+      }).onOk(() => {
+        const company = this.$store.getters['company/getActiveCompany']
+        const store = this.$store.getters['company/getStore']
+        this.$firestore
+          .collection('companies').doc(company)
+          .collection('stores').doc(store)
+          .collection('invoices').doc(this.$route.params.id)
+          .collection('products').doc(id).delete()
+      }).onCancel(() => {
+      })
     }
   },
   mounted () {

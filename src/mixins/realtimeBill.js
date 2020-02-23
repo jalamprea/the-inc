@@ -2,6 +2,7 @@ const mixin = {
   data () {
     return {
       data: [],
+      billInfo: {},
       company: '',
       store: ''
     }
@@ -12,9 +13,12 @@ const mixin = {
         .collection('companies').doc(this.company)
         .collection('stores').doc(this.store)
         .collection('invoices').doc(this.$route.params.id)
-        .collection('products')
-      this.$bind('data', dbRef).then(res => {
-        console.log('res :', res)
+
+      this.$bind('billInfo', dbRef).then(res => {
+        console.log('billInfo :', res)
+      })
+      this.$bind('data', dbRef.collection('products')).then(res => {
+        console.log('data :', res)
       })
     }
   },
