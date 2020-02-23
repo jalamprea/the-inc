@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
 import company from './company'
+import provider from './provider'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     plugins: [createPersistedState()],
     modules: {
-      company
+      company,
+      provider
     },
 
     // enable strict mode (adds overhead!)
