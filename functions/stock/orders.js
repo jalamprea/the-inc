@@ -78,7 +78,7 @@ async function validatePendingInvoices(company) {
 
       const batch = db.batch()
       for (let p = 0; p < products.docs.length; p++) {
-        const product = products.docs[i]
+        const product = products.docs[p]
         const stockProductRef = db.collection('companies').doc(company).collection('inventory').doc(product.id)
         const newStock = db.firestore.FieldValue.increment(product.data().units * -1)
         batch.update(stockProductRef, { stock: newStock })

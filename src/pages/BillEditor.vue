@@ -5,7 +5,7 @@
       <div>
         #{{id}} <span class="text-weight-light">[ ClientID: {{billInfo && billInfo.clientId ? billInfo.clientId : '-'}} ]</span>
       </div>
-      <q-btn color="secondary" v-if="data.length > 0">
+      <q-btn color="secondary" v-if="data.length > 0" @click="processInvoice">
         Procesar
       </q-btn>
     </div>
@@ -24,7 +24,7 @@
         <tbody>
           <tr v-if="data.length === 0 && !addingProduct">
             <td colspan="6" class="text-center">
-              No items added yet
+              No hay productos agregados aún. Completa tu factura agregando nuevos productos.
             </td>
           </tr>
 
@@ -243,6 +243,52 @@ export default {
           .collection('products').doc(id).delete()
       }).onCancel(() => {
       })
+    },
+    async processInvoice () {
+      // current company for product inventory udpate:
+      const company = this.$store.getters['company/getActiveCompany']
+
+      const prods = await this.$firestore.collection('companies').doc(company).collection('inventory').get()
+
+      // Current stock for this company
+      const stock = {}
+      prods.docs.map(doc => {
+        stock[doc.id] = doc.data()
+        return stock[doc.id]
+      })
+
+      let invoiceReady = true
+      let productNotAvailable = null
+      this.data.forEach(product => {
+        // validate requested units among stock availability:
+        if (product.units > stock[product.id].stock) {
+          invoiceReady = false
+          productNotAvailable = product
+          console.log('Product not available:', product)
+        }
+      })
+
+      if (!invoiceReady) {
+        console.log('Invoice cannot be processed')
+        this.$q.notify('El producto "' + productNotAvailable.name + '" ya no se encuentra disponible')
+        return false
+      }
+
+      const batch = this.$firestore.batch()
+      for (let p = 0; p < this.data.length; p++) {
+        const product = this.data[p]
+        const stockProductRef = this.$firestore.collection('companies').doc(company).collection('inventory').doc(product.id)
+        const newStock = this.$firebase.firestore.FieldValue.increment(product.units * -1)
+        batch.update(stockProductRef, { stock: newStock })
+      }
+
+      batch.update(this.billRef, { status: 'processed' })
+
+      await batch.commit()
+      console.log('Updated invoice', this.billInfo.id)
+
+      this.$q.notify('Factura procesada correctamente!')
+      this.$router.push({ name: 'list' })
     }
   },
   mounted () {
