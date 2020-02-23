@@ -29,7 +29,7 @@ const updateHandler = (change, context) => {
     })
   } else if (newData.stock === STOCK_LIMIT-1) {
     // send notification to providers about low stock...
-    sendNotificationLowStock(company, product).catch(err => {
+    sendNotificationLowStock(company, product, newData.stock).catch(err => {
       console.error('Notification error:', err)
     })
   }
@@ -93,18 +93,20 @@ async function validatePendingInvoices(company) {
 }
 
 
-async function sendNotificationLowStock(company, product) {
+async function sendNotificationLowStock(company, product, units) {
   console.log('Send notification because of low stock on', product, 'from company:', company);
 
   const companyRef = await db.collection('companies').doc(company).get()
   const providerID = companyRef.data().provider;
 
-  const lowStockNotification = {
-    company,
-    product,
-    amount: STOCK_LIMIT - 1,
-    type: 'lowStock'
+  const orderNotification = {
+    client: company,
+    product_id: product,
+    product_name: product,
+    units: units,
+    status: 'pending'
   }
-  await db.collection('providers').doc(providerID).collection('notifications').set(lowStockNotification)
+  await db.collection('providers').doc(providerID).collection('notifications').add(orderNotification)
+
 
 }
