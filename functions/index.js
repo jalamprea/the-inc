@@ -1,11 +1,12 @@
 const functions = require('firebase-functions');
-const stock = require('./stock.js')
+const stock = require('./stockHTTP.js')
+const stockDB = require('./stock/orders.js')
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+// Firestore watcher
+exports.stockChanges = functions.firestore
+  .document('companies/{company}/inventory/{product}')
+  .onUpdate(stockDB.updateHandler);
 
+
+// HTTP upload handler for CSV
 exports.stock = functions.https.onRequest(stock.app);

@@ -1,21 +1,16 @@
-const express = require('express')
 const multer = require('multer')
-const cors = require('cors')
 
-// Firestore connection
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
-const db = admin.firestore();
+let db = null;
+
+const setDB = firestoreDB => {
+  db = firestoreDB;
+};
 
 // File limit: check if it is enough:
 const SIZE_LIMIT = 2 * 1024 * 1024 // 2MB
 
-const app = express()
-
 const multipartFormDataParser = multer({
   storage: multer.memoryStorage(),
-  // increase size limit if needed
   limits: {fieldSize: SIZE_LIMIT},
 
   // https://github.com/emadalam/multer
@@ -24,8 +19,7 @@ const multipartFormDataParser = multer({
   },
 })
 
-app.use(cors())
-app.post('/update', multipartFormDataParser.any(), async function (req, res, next) {
+async function handleRequest(req, res, next) {
   res.set('Access-Control-Allow-Origin', '*');
 
   const company = req.body.company || null;
@@ -47,10 +41,7 @@ app.post('/update', multipartFormDataParser.any(), async function (req, res, nex
   }
 
   res.json(out);
-})
-
-exports.app = app;
-
+}
 
 // Update the respective stock company
 const updateStock = async (company, products) => {
@@ -108,4 +99,10 @@ const processCSV = raw => {
   })
 
   return products
+}
+
+module.exports = {
+  multipartFormDataParser,
+  handleRequest,
+  setDB
 }
