@@ -19,6 +19,20 @@ const routes = [
     children: [
       { path: '', name: 'login', component: () => import('pages/init/login.vue') }
     ]
+  },
+  {
+    path: '/proveedor/:id',
+    component: () => import('layouts/ProviderLayout.vue'),
+    children: [
+      { path: '', name: 'single-provider', props: true, component: () => import('pages/provider/home.vue') }
+    ]
+  },
+  {
+    path: '/proveedor',
+    component: () => import('layouts/CleanLayout.vue'),
+    children: [
+      { path: '', name: 'login-provider', component: () => import('pages/init/login-provider.vue') }
+    ]
   }
 ]
 
